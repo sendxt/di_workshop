@@ -1,0 +1,25 @@
+{
+    "name": "di/workshop",
+    "authors": [
+        {
+            "name": "Art",
+            "email": "arturas.mateika@nfq.lt"
+        }
+    ],
+    "require": {
+        "phpunit/phpunit": "^7.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
