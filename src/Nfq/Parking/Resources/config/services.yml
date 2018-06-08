@@ -1,0 +1,4 @@
+services:
+    nfq_parking_parking:
+        class: Nfq\Parking\Parking
+        public: true

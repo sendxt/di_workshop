@@ -3,4 +3,7 @@
 
 require __DIR__.'/../vendor/autoload.php';
 
-var_dump(new \Nfq\Parking\Auto());die;
+$containerFactory = new \Nfq\Parking\Container\ContainerFactory();
+$container = $containerFactory::create('var/cache/containerCache.php');
+
+var_dump($container->get('nfq_parking_parking'));die;
