@@ -2,28 +2,36 @@
 
 namespace Nfq\Parking\Container;
 
-
 use Nfq\Parking\DependencyInjection\NfqParkingExtension;
-use Psr\Container\ContainerInterface;
+use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 
 class ContainerFactory
 {
     /**
-     * @return ContainerInterface
+     * @param $filename
+     * @param bool $isDebug
+     *
+     * @return \ParkingContainer
      */
-    public static function create($filename)
+    public static function create($filename, $isDebug = false)
     {
-        $containerBuilder = new ContainerBuilder();
-        $extension = new NfqParkingExtension();
-        $containerBuilder->registerExtension($extension);
-        $containerBuilder->loadFromExtension($extension->getAlias());
-        $containerBuilder->compile();
+        $containerConfigCache = new ConfigCache($filename, $isDebug);
 
-        $dumper = new PhpDumper($containerBuilder);
+        if (!$containerConfigCache->isFresh()) {
+            $containerBuilder = new ContainerBuilder();
+            $extension = new NfqParkingExtension();
+            $containerBuilder->registerExtension($extension);
+            $containerBuilder->loadFromExtension($extension->getAlias());
+            $containerBuilder->compile();
 
-        file_put_contents($filename, $dumper->dump(['class' => 'ParkingContainer']));
+            $dumper = new PhpDumper($containerBuilder);
+            $containerConfigCache->write(
+                $dumper->dump(['class' => 'ParkingContainer']),
+                $containerBuilder->getResources()
+            );
+        }
 
         require_once $filename;
 
